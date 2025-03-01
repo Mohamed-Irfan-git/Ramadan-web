@@ -1,38 +1,57 @@
-document.addEventListener("DOMContentLoaded", function() {
+document.addEventListener("DOMContentLoaded", function () {
     const starsContainer = document.querySelector(".stars");
-    const numStars = 100; // Number of stars
-    const numShootingStars = 5; // Shooting stars count
 
-    for (let i = 0; i < numStars; i++) {
-        let star = document.createElement("div");
-        star.classList.add("star");
+    function generateStars() {
+        starsContainer.innerHTML = ""; // Clear existing stars
 
-        let x = Math.random() * window.innerWidth; 
-        let y = Math.random() * window.innerHeight;
-        let size = Math.random() * 3 + 1; 
-        let duration = Math.random() * 2 + 1; 
+        let numStars;
+        if (window.innerWidth > 1024) {
+            numStars = 100; // More stars on large screens
+        } else if (window.innerWidth > 768) {
+            numStars = 60; // Moderate stars on tablets
+        } else {
+            numStars = 40; // Fewer stars on mobile for performance
+        }
 
-        star.style.left = `${x}px`;
-        star.style.top = `${y}px`;
-        star.style.width = `${size}px`;
-        star.style.height = `${size}px`;
-        star.style.animationDuration = `${duration}s`;
+        for (let i = 0; i < numStars; i++) {
+            let star = document.createElement("div");
+            star.classList.add("star");
 
-        starsContainer.appendChild(star);
+            let x = Math.random() * window.innerWidth;
+            let y = Math.random() * window.innerHeight;
+            let size = Math.random() * 3 + 1; // Random star size
+            let duration = Math.random() * 3 + 2; // Random animation duration
+
+            star.style.left = `${x}px`;
+            star.style.top = `${y}px`;
+            star.style.width = `${size}px`;
+            star.style.height = `${size}px`;
+            star.style.animationDuration = `${duration}s`;
+
+            starsContainer.appendChild(star);
+        }
     }
 
-    // Shooting Stars
-    for (let i = 0; i < numShootingStars; i++) {
-        let shootingStar = document.createElement("div");
-        shootingStar.classList.add("shooting-star");
+    function generateShootingStars() {
+        setInterval(() => {
+            let shootingStar = document.createElement("div");
+            shootingStar.classList.add("shooting-star");
 
-        let x = Math.random() * window.innerWidth;
-        let y = Math.random() * window.innerHeight;
+            let startX = Math.random() * window.innerWidth;
+            let startY = Math.random() * window.innerHeight * 0.5; // Starts from top half
 
-        shootingStar.style.left = `${x}px`;
-        shootingStar.style.top = `${y}px`;
-        shootingStar.style.animationDelay = `${Math.random() * 5}s`;
+            shootingStar.style.left = `${startX}px`;
+            shootingStar.style.top = `${startY}px`;
 
-        starsContainer.appendChild(shootingStar);
+            document.body.appendChild(shootingStar);
+
+            setTimeout(() => {
+                shootingStar.remove(); // Remove after animation
+            }, 6000);
+        }, 4000); // New shooting star every 4s
     }
+
+    generateStars();
+    generateShootingStars();
+    window.addEventListener("resize", generateStars); // Adjust on resize
 });
